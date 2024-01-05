@@ -1,13 +1,13 @@
 "use client"
-import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, querySnapshot } from "firebase/firestore"; 
+import { db } from './firebase'
 
 export default function Home() {
   const [items, setItems] = useState([
-    {name: 'Food', price: 13.5},
-    {name: 'Gas', price: 40},
-    {name: 'Rent', price: 300},
+    // {name: 'Food', price: 13.5},
+    // {name: 'Gas', price: 40},
+    // {name: 'Rent', price: 300},
   ])
   const [newItem, setNewItem] = useState({name: '', price: 0})
   const [total , setTotal] = useState(0)
@@ -17,14 +17,37 @@ export default function Home() {
 const addItem = async (e) => {
   e.preventDefault()
   if(newItem.name !== '' &&  newItem.price !== 0) {
-    setItems([...items, newItem])
+    await addDoc(collection(db, "items"), {
+      name: newItem.name.trim(),
+      price: newItem.price
+    });
+    // setItems([...items, newItem])
+    setNewItem({name: '', price: 0})
   }
 }
 
 //read items from database
 
+useEffect(() => {
+  const getData = async () => {
+    const querySnapshot = await getDocs(collection(db, "items"));
+    const data = querySnapshot.docs.map(doc => doc.data())
+    setItems(data)
+
+    // read total
+    let total = 0
+    data.forEach(item => {
+      total += Number(item.price)
+    })
+    setTotal(total)
+  }
+  getData()
+})
 
 //delete item from database
+
+
+//edit item from database
 
 
   return (
