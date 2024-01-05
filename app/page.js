@@ -1,6 +1,7 @@
 "use client"
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import { collection, addDoc } from "firebase/firestore"; 
 
 export default function Home() {
   const [items, setItems] = useState([
@@ -8,17 +9,44 @@ export default function Home() {
     {name: 'Gas', price: 40},
     {name: 'Rent', price: 300},
   ])
-
+  const [newItem, setNewItem] = useState({name: '', price: 0})
   const [total , setTotal] = useState(0)
+
+
+// add item to database
+const addItem = async (e) => {
+  e.preventDefault()
+  if(newItem.name !== '' &&  newItem.price !== 0) {
+    setItems([...items, newItem])
+  }
+}
+
+//read items from database
+
+
+//delete item from database
+
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 p-4">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
         <h1 className='text-4xl p-4 text-center'>Expense Tracker</h1>
         <div className='bg-slate-400 p-4 text-center'>
           <form className='grid grid-cols-6 items-center text-black'>
-            <input type="text" placeholder="Enter Item" className="col-span-3 border-2 mx-2 border-gray-300 p-2 rounded-lg" />
-            <input type="number" placeholder="Enter $" className="col-span-2 border-2 border-gray-300 p-2 rounded-lg" />
-            <button type='submit' className="bg-blue-500 hover:bg-blue-700 text-white font-bold
+            <input value={newItem.name}
+            onChange={(e) => setNewItem({...newItem, name: e.target.value})}
+             type="text"
+              placeholder="Enter Item" 
+              className="col-span-3 border-2 mx-2 border-gray-300 p-2 rounded-lg" />
+            <input 
+            onChange={(e) => setNewItem({...newItem, price: e.target.value})}
+            value={newItem.price}
+            type="number"
+            placeholder="Enter $"
+            className="col-span-2 border-2 border-gray-300 p-2 rounded-lg" />
+            <button
+            onClick={(e) => addItem(e)}
+            type='submit' className="bg-blue-500 hover:bg-blue-700 text-white font-bold
              py-2 px-4 mx-2 rounded">Add</button>
           </form>
           <ul>
