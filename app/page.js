@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { collection, addDoc, getDocs, querySnapshot } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, querySnapshot,deleteDoc,doc } from "firebase/firestore"; 
 import { db } from './firebase'
 
 export default function Home() {
@@ -28,24 +28,27 @@ const addItem = async (e) => {
 
 //read items from database
 
-useEffect(() => {
-  const getData = async () => {
-    const querySnapshot = await getDocs(collection(db, "items"));
-    const data = querySnapshot.docs.map(doc => doc.data())
-    setItems(data)
+// read items from database
+  useEffect(() => {
+    const getData = async () => {
+      const querySnapshot = await getDocs(collection(db, "items"));
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      setItems(data)
 
-    // read total
-    let total = 0
-    data.forEach(item => {
-      total += Number(item.price)
-    })
-    setTotal(total)
-  }
-  getData()
-})
+      // calculate total
+      let total = 0
+      data.forEach(item => {
+        total += Number(item.price)
+      })
+      setTotal(total)
+    }
+    getData()
+  }, [])
 
 //delete item from database
-
+const deleteItem = async (id) => {
+  await deleteDoc(doc(db, "items", id))
+}
 
 //edit item from database
 
@@ -79,7 +82,7 @@ useEffect(() => {
                   <span className='capitalize'>{item.name}</span>
                   <span>${item.price}</span>
                 </div>
-                <button className='ml-8 p-4 border-l-2 border-slate-900 hover:bg-slate-700 '>X</button>
+                <button onClick={() => deleteItem(item.id)} className='ml-8 p-4 border-l-2 border-slate-900 hover:bg-slate-700 '>X</button>
               </li>
             ))}
           </ul>
