@@ -5,7 +5,6 @@ import { db } from './firebase'
 
 export default function Home() {
   const [items, setItems] = useState([
-    // {name: 'Gas', price: 40},
     // {name: 'Rent', price: 300},
   ])
   const [newItem, setNewItem] = useState({name: '', price: 0})
