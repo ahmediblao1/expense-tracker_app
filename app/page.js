@@ -47,7 +47,7 @@ const deleteItem = async (id) => {
   await deleteDoc(doc(db, "items", id))
 }
 
-//edit item from database
+//edit items from database
 
 
   return (
