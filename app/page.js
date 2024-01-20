@@ -70,7 +70,7 @@ const deleteItem = async (id) => {
             <button
             onClick={(e) => addItem(e)}
             type='submit' className="bg-blue-500 hover:bg-blue-700 text-white font-bold
-             py-2 px-4 mx-2 rounded">Add</button>
+             py-2 px-4 mx-2 rounded">Add item</button>
           </form>
           <ul>
             {items.map((item,id) => (
